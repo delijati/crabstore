@@ -1,0 +1,13 @@
+{
+  "name": "crabstore",
+  "private": "true",
+  "devDependencies": {
+    "ionic": "driftyco/ionic-bower#1.0.0-rc.5"
+  },
+  "dependencies": {
+    "protobuf": "~3.8.2",
+    "angular": "1.3.13",
+    "angular-local-storage": "~0.2.1",
+    "ionic": "~1.0.0"
+  }
+}
