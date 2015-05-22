@@ -6,6 +6,9 @@ if (typeof String.prototype.startsWith != 'function') {
 }
 
 var paramBuild = function(obj) {
+  if(obj == undefined) {
+    return "";
+  }
   var query = '', name, value, fullSubName, subName, subValue, innerObj, i;
 
   for(name in obj) {

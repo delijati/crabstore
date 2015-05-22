@@ -6,7 +6,7 @@
 // 'requires' 'starter.controllers' is found in controllers.js
 'use strict';
 
-angular.module('starter', ['ionic', 'LocalStorageModule'])
+angular.module('starter', ['ionic', 'LocalStorageModule', 'ngCordova'])
 
 .run([
   '$ionicPlatform',

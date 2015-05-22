@@ -67,6 +67,7 @@ angular.module('starter')
     $scope.doDownload = function() {
       crabstore.download(
         $stateParams.itemId,
+        $scope.item,
         function() {
         },
         function() {

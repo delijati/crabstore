@@ -63,11 +63,46 @@ angular.module('starter')
 .factory('crabstore', [
   '$http',
   'auth',
-  function($http, auth) {
+  '$cordovaFileTransfer',
+  '$timeout',
+  '$ionicPlatform',
+  function($http, auth, $cordovaFileTransfer, $timeout, $ionicPlatform) {
 
     var _items = {};
 
     return {
+      _request: function(path, success, error, params) {
+        var url = 'https://android.clients.google.com/fdfe/' +  path;
+        console.log(url);
+        var req = {
+          method: 'GET',
+          url: url,
+          responseType: 'arraybuffer',
+          headers: {
+            'Authorization': 'GoogleLogin auth=' + auth.token,
+            'X-DFE-Device-Id': androidid,
+          },
+          data: paramBuild(params)
+        };
+        if (params != undefined) {
+          req.method = 'POST';
+          req.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+        }
+        $http(req).
+          success(
+            function(data, status, headers, config) {
+              var ProtoBuf = dcodeIO.ProtoBuf;
+              var ResponseWrapper = ProtoBuf.loadProtoFile(
+                'js/googleplay.proto').build('ResponseWrapper');
+                var message = ResponseWrapper.decode(data);
+                console.log(message.payload);
+                success(message.payload);
+            }).
+              error(
+                function(data, status, headers, config) {
+                  error([]);
+                });
+      },
       getItems: _items,
       getItemById: function(id) {
         return _items[id];
@@ -75,66 +110,74 @@ angular.module('starter')
       search: function(text, success, error) {
         console.log(text);
         var path = 'search?c=3&q=' + escape(text);
-        var url = 'https://android.clients.google.com/fdfe/' +  path;
-        var req = {
-          method: 'GET',
-          url: url,
-          responseType: 'arraybuffer',
-          headers: {
-            'Authorization': 'GoogleLogin auth=' + auth.token,
-            'X-DFE-Device-Id': androidid,
-          }
-        };
-        $http(req).
-          success(function(data, status, headers, config) {
-          var ProtoBuf = dcodeIO.ProtoBuf;
-          var ResponseWrapper = ProtoBuf.loadProtoFile(
-            'js/googleplay.proto').build('ResponseWrapper');
-            var message = ResponseWrapper.decode(data);
-            console.log('Got: ');
-            console.log(data.length);
-            console.log(message);
-            var doc = message.payload.searchResponse.doc[0];
+        this._request(
+          path,
+          function(payload) {
+            var doc = payload.searchResponse.doc[0];
             console.log(doc.child.length);
             for(var i=0; i < doc.child.length; i++) {
               var child = doc.child[i];
               _items[child.docid] = child;
             }
             success(_items);
-        }).
-          error(function(data, status, headers, config) {
-          error([]);
-        });
+          },
+          function(payload) {
+            error([]);
+          }
+        );
       },
       getDetailsByPath: function(path, success, error) {
-        console.log(path);
-        var url = 'https://android.clients.google.com/fdfe/' +  path;
-        var req = {
-          method: 'GET',
-          url: url,
-          responseType: 'arraybuffer',
-          headers: {
-            'Authorization': 'GoogleLogin auth=' + auth.token,
-            'X-DFE-Device-Id': androidid,
-          }
-        };
-        $http(req).
-          success(function(data, status, headers, config) {
-          var ProtoBuf = dcodeIO.ProtoBuf;
-          var ResponseWrapper = ProtoBuf.loadProtoFile(
-            'js/googleplay.proto').build('ResponseWrapper');
-            var message = ResponseWrapper.decode(data);
-            console.log('Got detail: ');
-            console.log(message);
-            var doc = message.payload.detailsResponse.docV2;
+        this._request(
+          path,
+          function(payload) {
+            var doc = payload.detailsResponse.docV2;
             success(doc);
-        }).
-          error(function(data, status, headers, config) {
-          error([]);
-        });
+          },
+          function(payload) {
+            error([]);
+          }
+        );
       },
-      download: function(id, success, error) {
-        console.log('download');
+      download: function(id, doc, success, error) {
+        var path = 'purchase';
+        var params = {
+          ot: doc.offer[0].offerType,
+          doc: id,
+          vc: doc.details.appDetails.versionCode
+        };
+        this._request(
+          path,
+          function(payload) {
+            $ionicPlatform.ready(function() {
+              var url = payload.buyResponse.
+                purchaseStatusResponse.appDeliveryData.downloadUrl;
+              var cookie = payload.buyResponse.purchaseStatusResponse.
+                appDeliveryData.downloadAuthCookie[0];
+              var targetPath = cordova.file.documentsDirectory + id + '.apk';
+              var trustHosts = true;
+              var options = {
+                'User-Agent': 'AndroidDownloadManager/4.1.1 (Linux; U; Android 4.1.1; Nexus S Build/JRO03E)',
+                'Cookie': cookie.name + '=' + cookie.value,
+              };
+
+              $cordovaFileTransfer.download(url, targetPath, options, trustHosts)
+              .then(function(result) {
+                // success(doc);
+                // Success!
+              }, function(err) {
+                // Error
+              }, function (progress) {
+                $timeout(function () {
+                  console.log((progress.loaded / progress.total) * 100);
+                });
+              });
+            });
+          },
+          function(payload) {
+            error([]);
+          },
+          params
+        );
       }
     };
   }
