@@ -26,11 +26,20 @@ Set install ionic::
 
 Add platform::
 
-    $ ionic platform add android@3.5
+    $ ionic platform add android
 
-Wee need to add whitelist to set permission in config.xml::
+We need to add whitelist to set permission in config.xml::
 
     $ ionic plugin add https://github.com/apache/cordova-plugin-whitelist.git 
+    $ ionic plugin add cordova-plugin-file-transfer
+
+See log:
+
+    $ adb logcat
+
+Edit file transfer java:
+
+    platforms/android/src/org/apache/cordova/filetransfer/FileTransfer.java
 
 Run
 ---

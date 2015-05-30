@@ -1,6 +1,6 @@
 'use strict';
 
-var androidid = '5B2A2FD8BCADEC6'; // use ionic.Platform.device().uuid
+var androidid = '328c8916709f749a'; // use ionic.Platform.device().uuid
 
 angular.module('starter')
 .factory('auth', [
@@ -153,18 +153,23 @@ angular.module('starter')
                 purchaseStatusResponse.appDeliveryData.downloadUrl;
               var cookie = payload.buyResponse.purchaseStatusResponse.
                 appDeliveryData.downloadAuthCookie[0];
-              var targetPath = cordova.file.documentsDirectory + id + '.apk';
+              var targetPath = cordova.file.dataDirectory + id + '.apk';
               var trustHosts = true;
               var options = {
-                'User-Agent': 'AndroidDownloadManager/4.1.1 (Linux; U; Android 4.1.1; Nexus S Build/JRO03E)',
-                'Cookie': cookie.name + '=' + cookie.value,
+                headers: {
+                  Cookie: cookie.name + '=' + cookie.value
+                },
               };
 
               $cordovaFileTransfer.download(url, targetPath, options, trustHosts)
               .then(function(result) {
+                console.log('success');
+                console.log(result);
                 // success(doc);
                 // Success!
               }, function(err) {
+                console.log('errrrooorrr');
+                console.log(err);
                 // Error
               }, function (progress) {
                 $timeout(function () {
