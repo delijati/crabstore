@@ -66,7 +66,9 @@ angular.module('starter')
   '$cordovaFileTransfer',
   '$timeout',
   '$ionicPlatform',
-  function($http, auth, $cordovaFileTransfer, $timeout, $ionicPlatform) {
+  '$interval',
+  '$rootScope',
+  function($http, auth, $cordovaFileTransfer, $timeout, $ionicPlatform, $interval, $rootScope) {
 
     var _items = {};
 
@@ -148,6 +150,14 @@ angular.module('starter')
         this._request(
           path,
           function(payload) {
+            var downloading = [];
+
+            $interval(function(){
+              downloading.forEach(function(download) {
+                $rootScope.$broadcast('download-progress', download);
+                });
+            }, 1000);
+
             $ionicPlatform.ready(function() {
               var url = payload.buyResponse.
                 purchaseStatusResponse.appDeliveryData.downloadUrl;
@@ -160,6 +170,7 @@ angular.module('starter')
                   Cookie: cookie.name + '=' + cookie.value
                 },
               };
+              downloading.push({num:id, progress:0});
 
               $cordovaFileTransfer.download(url, targetPath, options, trustHosts)
               .then(function(result) {
@@ -172,6 +183,12 @@ angular.module('starter')
                 console.log(err);
                 // Error
               }, function (progress) {
+                // constant progress updates
+                downloading.forEach(function(download){
+                  if(download.num === id){
+                    download.progress = progress.loaded/progress.total;
+                  }
+                }); 
                 $timeout(function () {
                   console.log((progress.loaded / progress.total) * 100);
                 });

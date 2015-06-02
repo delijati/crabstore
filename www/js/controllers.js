@@ -62,9 +62,12 @@ angular.module('starter')
   '$stateParams',
   'crabstore',
   '$ionicSlideBoxDelegate',
-  function($scope, $stateParams, crabstore, $ionicSlideBoxDelegate) {
+  '$rootScope',
+  function($scope, $stateParams, crabstore, $ionicSlideBoxDelegate, $rootScope) {
     $scope.item = crabstore.getItemById($stateParams.itemId);
+    $scope.download = {progress:0};
     $scope.doDownload = function() {
+      $scope.downloadDisabled = true;
       crabstore.download(
         $stateParams.itemId,
         $scope.item,
@@ -87,5 +90,10 @@ angular.module('starter')
         $ionicSlideBoxDelegate.$getByHandle('image-viewer').update();
       }
     );
+    $rootScope.$on('download-progress', function(event, args) {
+      if ($stateParams.itemId === args.num) {
+        angular.copy(args, $scope.download);
+      }
+    });
   }
 ]);
