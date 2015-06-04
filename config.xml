@@ -17,7 +17,8 @@
   <preference name="BackupWebStorage" value="none"/>
   <preference name="SplashScreen" value="screen"/>
   <preference name="SplashScreenDelay" value="3000"/>
-  <preference name="OverrideUserAgent" value="Android-Finsky/4.0.25 (api=3,versionCode=80200025,sdk=19,device=crespo,hardware=herring,product=soju)"/>
+  <!-- <preference name="OverrideUserAgent" value="Android&#45;Finsky/4.0.25 (api=3,versionCode=80200025,sdk=19,device=crespo,hardware=herring,product=soju)"/> -->
+  <preference name="OverrideUserAgent" value="Android-Finsky/4.0.25 (api=3,versionCode=80200025,sdk=19)"/>
   <feature name="StatusBar">
     <param name="ios-package" value="CDVStatusBar" onload="true"/>
   </feature>
@@ -41,4 +42,5 @@
     <splash src="resources/android/splash/drawable-port-xxhdpi-screen.png" density="port-xxhdpi"/>
     <splash src="resources/android/splash/drawable-port-xxxhdpi-screen.png" density="port-xxxhdpi"/>
   </platform>
+  <icon src="resources/android/icon/drawable-xhdpi-icon.png"/>
 </widget>

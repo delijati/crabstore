@@ -1,4 +1,18 @@
 {
   "name": "crabstore",
-  "app_id": ""
+  "app_id": "",
+  "proxies": [
+    {
+      "path": "/auth",
+      "proxyUrl": "https://android.clients.google.com/auth"
+    },
+    {
+      "path": "/fdfe",
+      "proxyUrl": "https://android.clients.google.com/fdfe"
+    },
+    {
+      "path": "/bla",
+      "proxyUrl": "http://www.heise.de"
+    }
+  ]
 }

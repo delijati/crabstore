@@ -6,7 +6,8 @@ angular.module('starter')
 .factory('auth', [
   '$http',
   'localStorageService',
-  function($http, localStorageService) {
+  'GoogleAPIUrl',
+  function($http, localStorageService, GoogleAPIUrl) {
     return {
       token: localStorageService.get('google_token'),
       isLoggedIn: function() {
@@ -30,7 +31,7 @@ angular.module('starter')
         };
         var req = {
           method: 'POST',
-          url: 'https://android.clients.google.com/auth',
+          url: GoogleAPIUrl + '/auth',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
           },
@@ -53,6 +54,7 @@ angular.module('starter')
         }).
           error(function(data, status, headers, config) {
           console.error('login error');
+          console.error(headers);
           console.error(data);
           error('login error');
         });
@@ -68,13 +70,14 @@ angular.module('starter')
   '$ionicPlatform',
   '$interval',
   '$rootScope',
-  function($http, auth, $cordovaFileTransfer, $timeout, $ionicPlatform, $interval, $rootScope) {
-
+  'GoogleAPIUrl',
+  function($http, auth, $cordovaFileTransfer, $timeout, $ionicPlatform,
+           $interval, $rootScope, GoogleAPIUrl) {
     var _items = {};
 
     return {
       _request: function(path, success, error, params) {
-        var url = 'https://android.clients.google.com/fdfe/' +  path;
+        var url = GoogleAPIUrl + '/fdfe/' +  path;
         console.log(url);
         var req = {
           method: 'GET',

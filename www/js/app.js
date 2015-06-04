@@ -7,6 +7,8 @@
 'use strict';
 
 angular.module('starter', ['ionic', 'LocalStorageModule', 'ngCordova'])
+.constant('GoogleAPIUrl', 'https://android.clients.google.com')
+// .constant('GoogleAPIUrl', '') //http://localhost:22222')
 
 .run([
   '$ionicPlatform',

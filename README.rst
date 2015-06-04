@@ -47,3 +47,27 @@ Run
 Run::
 
     $ ionic emulate android
+
+Run local with proxy
+--------------------
+
+Ionic uses a proxy middleware but i wasn't able to get it running properly :/
+
+``ionic/node_modules/proxy-middleware/index.js``
+
+Configure app to use proxy http://ionicframework.com/docs/cli/test.html
+
+To get the google api running we also need to set the user-agent there is a
+plugin for ff to do that.
+
+https://addons.mozilla.org/de/firefox/addon/user-agent-overrider/
+
+Icons & splash
+--------------
+
+Icon sollte 192x192 px haben und splash 2208x2208
+
+Erstellen::
+    
+    $ ionic resources --icon
+    $ ionic resources --splash
