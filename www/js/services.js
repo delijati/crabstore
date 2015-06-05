@@ -66,13 +66,11 @@ angular.module('starter')
   '$http',
   'auth',
   '$cordovaFileTransfer',
-  '$timeout',
   '$ionicPlatform',
-  '$interval',
   '$rootScope',
   'GoogleAPIUrl',
-  function($http, auth, $cordovaFileTransfer, $timeout, $ionicPlatform,
-           $interval, $rootScope, GoogleAPIUrl) {
+  function($http, auth, $cordovaFileTransfer, $ionicPlatform, $rootScope,
+           GoogleAPIUrl) {
     var _items = {};
 
     return {
@@ -143,7 +141,7 @@ angular.module('starter')
           }
         );
       },
-      download: function(id, doc, success, error) {
+      download: function(id, doc, success, error, progress) {
         var path = 'purchase';
         var params = {
           ot: doc.offer[0].offerType,
@@ -153,48 +151,31 @@ angular.module('starter')
         this._request(
           path,
           function(payload) {
-            var downloading = [];
-
-            $interval(function(){
-              downloading.forEach(function(download) {
-                $rootScope.$broadcast('download-progress', download);
-                });
-            }, 1000);
-
             $ionicPlatform.ready(function() {
               var url = payload.buyResponse.
                 purchaseStatusResponse.appDeliveryData.downloadUrl;
               var cookie = payload.buyResponse.purchaseStatusResponse.
                 appDeliveryData.downloadAuthCookie[0];
               var targetPath = cordova.file.dataDirectory + id + '.apk';
+              console.log(targetPath);
               var trustHosts = true;
               var options = {
                 headers: {
                   Cookie: cookie.name + '=' + cookie.value
                 },
               };
-              downloading.push({num:id, progress:0});
 
-              $cordovaFileTransfer.download(url, targetPath, options, trustHosts)
-              .then(function(result) {
-                console.log('success');
-                console.log(result);
-                // success(doc);
-                // Success!
-              }, function(err) {
-                console.log('errrrooorrr');
-                console.log(err);
-                // Error
-              }, function (progress) {
-                // constant progress updates
-                downloading.forEach(function(download){
-                  if(download.num === id){
-                    download.progress = progress.loaded/progress.total;
-                  }
-                }); 
-                $timeout(function () {
-                  console.log((progress.loaded / progress.total) * 100);
-                });
+              var ft = $cordovaFileTransfer.download(url, targetPath, options, trustHosts);
+              var download = {num:id, progress:0, ft:ft};
+              ft.then(function(result) {
+                success(result);
+              },
+              function(err) {
+                error(err);
+              },
+              function (status) {
+                download.progress = status.loaded/status.total;
+                progress(download);
               });
             });
           },

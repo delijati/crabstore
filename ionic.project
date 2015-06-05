@@ -12,7 +12,7 @@
     },
     {
       "path": "/bla",
-      "proxyUrl": "http://www.heise.de"
+      "proxyUrl": "http://www.heise.de/tp"
     }
   ]
 }
