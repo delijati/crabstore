@@ -1,4 +1,4 @@
-<ion-view view-title="Item">
+<ion-view view-title="{{item.title}}">
   <ion-content>
     <h1>{{item.title}}</h1>
     <ion-slide-box delegate-handle="image-viewer">
@@ -11,6 +11,8 @@
     <div class="row responsive-md">
       <p ng-bind-html="detail.descriptionHtml|rawHtml"></p>
     </div>
-    <button ng-disabled="downloadDisabled" class="button button-block button-positive" ng-click="doDownload()">Donwload</button>
+    <div class="row responsive-md">
+      <button ng-disabled="downloadDisabled" class="button button-block button-positive" ng-click="doDownload()">Download</button>
+    </div>
   </ion-content>
 </ion-view>

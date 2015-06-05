@@ -112,6 +112,7 @@ angular.module('starter')
       },
       search: function(text, success, error) {
         console.log(text);
+        _items = {};
         var path = 'search?c=3&q=' + escape(text);
         this._request(
           path,
