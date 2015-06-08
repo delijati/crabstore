@@ -71,3 +71,14 @@ Erstellen::
     
     $ ionic resources --icon
     $ ionic resources --splash
+
+Testing
+-------
+
+First we install all needed dependencies::
+
+    $ npm install
+
+Now we are able to run tests::
+
+    $ node_modules/gulp/bin/gulp.js test 
