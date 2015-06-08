@@ -2,7 +2,7 @@
 
 var androidid = '328c8916709f749a'; // use ionic.Platform.device().uuid
 
-angular.module('starter')
+angular.module('crabstore')
 .factory('auth', [
   '$http',
   'localStorageService',

@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('starter')
+angular.module('crabstore')
 .controller('AppCtrl', [
   '$rootScope',
   '$scope',

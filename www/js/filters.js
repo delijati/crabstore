@@ -1,4 +1,4 @@
-angular.module('starter')
+angular.module('crabstore')
 .filter('rawHtml', [
   '$sce',
   function($sce){
