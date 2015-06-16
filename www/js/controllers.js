@@ -18,12 +18,24 @@ angular.module('crabstore')
   '$timeout',
   '$location',
   'auth',
-  function($rootScope, $scope, $timeout, $location, auth) {
+  '$cordovaDevice',
+  'localStorageService',
+  '$ionicPopup',
+  function($rootScope, $scope, $timeout, $location, auth, $cordovaDevice, localStorageService, $ionicPopup) {
     // Form data for the login modal
-    $scope.loginData = {};
+    $scope.loginData = localStorageService.get('loginData');
+
+    if ($scope.loginData == null) {
+      $scope.loginData = {};
+      // set androidid of current device
+      document.addEventListener('deviceready', function () {
+        $scope.loginData.androidid = $cordovaDevice.getUUID();
+      }, false);
+    }
 
     // Perform the login action when the user submits the login form
     $scope.doLogin = function() {
+      localStorageService.set('loginData', $scope.loginData);
       auth.createToken(
         $scope.loginData,
         function(token) {
@@ -31,7 +43,12 @@ angular.module('crabstore')
           $location.path('/app/items');
         },
         function(text) {
-          console.log(text);
+          // An alert dialog
+          var alertPopup = $ionicPopup.alert({
+            title: 'Login error',
+            template: text
+          });
+          console.error(text);
         }
       );
     };

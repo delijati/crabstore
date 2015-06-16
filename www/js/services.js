@@ -1,7 +1,5 @@
 'use strict';
 
-var androidid = '328c8916709f749a'; // use ionic.Platform.device().uuid
-
 angular.module('crabstore')
 .factory('auth', [
   '$http',
@@ -10,11 +8,13 @@ angular.module('crabstore')
   function($http, localStorageService, GoogleAPIUrl) {
     return {
       token: localStorageService.get('google_token'),
+      androidid: '',
       isLoggedIn: function() {
         return this.token !== null;
       },
       createToken: function(user, success, error) {
         var self = this;
+        self.androidid = user.androidid;
         var params = {
           'Email': user.username,
           'Passwd': user.password,
@@ -53,10 +53,8 @@ angular.module('crabstore')
           success(self.token);
         }).
           error(function(data, status, headers, config) {
-          console.error('login error');
-          console.error(headers);
-          console.error(data);
-          error('login error');
+          // console.error(headers);
+          error(data);
         });
       }
     };
@@ -72,40 +70,40 @@ angular.module('crabstore')
   function($http, auth, $cordovaFileTransfer, $ionicPlatform, $rootScope,
            GoogleAPIUrl) {
     var _items = {};
+    var _request = function(path, success, error, params) {
+      var url = GoogleAPIUrl + '/fdfe/' +  path;
+      console.log(url);
+      var req = {
+        method: 'GET',
+        url: url,
+        responseType: 'arraybuffer',
+        headers: {
+          'Authorization': 'GoogleLogin auth=' + auth.token,
+          'X-DFE-Device-Id': auth.androidid,
+        },
+        data: paramBuild(params)
+      };
+      if (params != undefined) {
+        req.method = 'POST';
+        req.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+      }
+      $http(req).
+        success(
+          function(data, status, headers, config) {
+            var ProtoBuf = dcodeIO.ProtoBuf;
+            var ResponseWrapper = ProtoBuf.loadProtoFile(
+              'js/googleplay.proto').build('ResponseWrapper');
+              var message = ResponseWrapper.decode(data);
+              console.log(message.payload);
+              success(message.payload);
+          }).
+            error(
+              function(data, status, headers, config) {
+                error([]);
+              });
+    };
 
     return {
-      _request: function(path, success, error, params) {
-        var url = GoogleAPIUrl + '/fdfe/' +  path;
-        console.log(url);
-        var req = {
-          method: 'GET',
-          url: url,
-          responseType: 'arraybuffer',
-          headers: {
-            'Authorization': 'GoogleLogin auth=' + auth.token,
-            'X-DFE-Device-Id': androidid,
-          },
-          data: paramBuild(params)
-        };
-        if (params != undefined) {
-          req.method = 'POST';
-          req.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-        }
-        $http(req).
-          success(
-            function(data, status, headers, config) {
-              var ProtoBuf = dcodeIO.ProtoBuf;
-              var ResponseWrapper = ProtoBuf.loadProtoFile(
-                'js/googleplay.proto').build('ResponseWrapper');
-                var message = ResponseWrapper.decode(data);
-                console.log(message.payload);
-                success(message.payload);
-            }).
-              error(
-                function(data, status, headers, config) {
-                  error([]);
-                });
-      },
       getItems: _items,
       getItemById: function(id) {
         return _items[id];
@@ -114,7 +112,7 @@ angular.module('crabstore')
         console.log(text);
         _items = {};
         var path = 'search?c=3&q=' + escape(text);
-        this._request(
+        _request(
           path,
           function(payload) {
             var doc = payload.searchResponse.doc[0];
@@ -131,7 +129,7 @@ angular.module('crabstore')
         );
       },
       getDetailsByPath: function(path, success, error) {
-        this._request(
+        _request(
           path,
           function(payload) {
             var doc = payload.detailsResponse.docV2;
@@ -149,7 +147,7 @@ angular.module('crabstore')
           doc: id,
           vc: doc.details.appDetails.versionCode
         };
-        this._request(
+        _request(
           path,
           function(payload) {
             $ionicPlatform.ready(function() {
