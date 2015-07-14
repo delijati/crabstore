@@ -82,3 +82,10 @@ First we install all needed dependencies::
 Now we are able to run tests::
 
     $ node_modules/gulp/bin/gulp.js test 
+
+Build after checkout
+--------------------
+::
+
+    $ ionic state restore
+    $ ionic state restore --plugins
