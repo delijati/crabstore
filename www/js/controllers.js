@@ -21,16 +21,18 @@ angular.module('crabstore')
   '$cordovaDevice',
   'localStorageService',
   '$ionicPopup',
-  function($rootScope, $scope, $timeout, $location, auth, $cordovaDevice, localStorageService, $ionicPopup) {
+  'deviceReady',
+  function($rootScope, $scope, $timeout, $location, auth, $cordovaDevice,
+           localStorageService, $ionicPopup, deviceReady) {
     // Form data for the login modal
     $scope.loginData = localStorageService.get('loginData');
 
     if ($scope.loginData == null) {
       $scope.loginData = {};
       // set androidid of current device
-      document.addEventListener('deviceready', function () {
+      deviceReady(function() {
         $scope.loginData.androidid = $cordovaDevice.getUUID();
-      }, false);
+      });
     }
 
     // Perform the login action when the user submits the login form
