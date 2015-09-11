@@ -1,3 +1,5 @@
+/*global cordova, paramBuild, dcodeIO, escape */
+
 'use strict';
 
 angular.module('crabstore')
@@ -83,7 +85,7 @@ angular.module('crabstore')
         },
         data: paramBuild(params)
       };
-      if (params != undefined) {
+      if (params !== undefined) {
         req.method = 'POST';
         req.headers['Content-Type'] = 'application/x-www-form-urlencoded';
       }
@@ -153,9 +155,10 @@ angular.module('crabstore')
             $ionicPlatform.ready(function() {
               var url = payload.buyResponse.
                 purchaseStatusResponse.appDeliveryData.downloadUrl;
+              console.log(url);
               var cookie = payload.buyResponse.purchaseStatusResponse.
                 appDeliveryData.downloadAuthCookie[0];
-              var targetPath = cordova.file.externalRootDirectory + 'crabstore/' + id + '.apk';
+              var targetPath = cordova.file.externalDataDirectory + 'crabstore/' + id + '.apk';
               console.log(targetPath);
               var trustHosts = true;
               var options = {
@@ -183,21 +186,6 @@ angular.module('crabstore')
           },
           params
         );
-      }
-    };
-  }
-]);
-
-angular.module('crabstore')
-.factory('deviceReady', [
-  function() {
-    return function(done) {
-      if (typeof window.cordova === 'object') {
-        document.addEventListener('deviceready', function () {
-          done();
-        }, false);
-      } else {
-        done();
       }
     };
   }

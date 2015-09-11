@@ -1,3 +1,5 @@
+/*global ionic */
+
 'use strict';
 
 angular.module('crabstore')
@@ -18,20 +20,23 @@ angular.module('crabstore')
   '$timeout',
   '$location',
   'auth',
-  '$cordovaDevice',
   'localStorageService',
   '$ionicPopup',
-  'deviceReady',
-  function($rootScope, $scope, $timeout, $location, auth, $cordovaDevice,
-           localStorageService, $ionicPopup, deviceReady) {
+  function($rootScope, $scope, $timeout, $location, auth, localStorageService,
+           $ionicPopup) {
     // Form data for the login modal
     $scope.loginData = localStorageService.get('loginData');
 
     if ($scope.loginData == null) {
       $scope.loginData = {};
       // set androidid of current device
-      deviceReady(function() {
-        $scope.loginData.androidid = $cordovaDevice.getUUID();
+      ionic.Platform.ready(function(){
+        // XXX sometimes binding does not work! :/
+        $scope.$apply(function() {
+          var device = ionic.Platform.device();
+          console.log(device.uuid);
+          $scope.loginData.androidid = device.uuid;
+        });
       });
     }
 
@@ -65,7 +70,9 @@ angular.module('crabstore')
     $scope.items = [];
     $scope.formatSize = function (bytes) {
       var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-      if (bytes == 0) return '0 Byte';
+      if (bytes === 0) {
+        return '0 Byte';
+      }
       var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
       return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
     };

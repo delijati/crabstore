@@ -1,3 +1,4 @@
+/*global cordova, StatusBar */
 'use strict';
 
 angular.module('crabstore', ['ionic', 'LocalStorageModule', 'ngCordova'])
@@ -44,10 +45,9 @@ angular.module('crabstore', ['ionic', 'LocalStorageModule', 'ngCordova'])
 
 .config([
   '$stateProvider',
-  '$urlRouterProvider',
   '$httpProvider',
   'localStorageServiceProvider',
-  function($stateProvider, $urlRouterProvider, $httpProvider, localStorageServiceProvider) {
+  function($stateProvider, $httpProvider, localStorageServiceProvider) {
     localStorageServiceProvider
     .setPrefix('crabstore');
 
@@ -87,9 +87,20 @@ angular.module('crabstore', ['ionic', 'LocalStorageModule', 'ngCordova'])
           controller: 'ItemCtrl'
         }
       }
+    })
+
+    .state("otherwise", {
+      url: "*path",
+      template: "",
+      controller: [
+        '$state',
+        function($state) {
+          $state.go('app.items');
+        }]
     });
 
-    $urlRouterProvider.otherwise('/app/items');
+    // XXX mixing up leads to an error https://github.com/angular-ui/ui-router/issues/2229
+    // $urlRouterProvider.otherwise('/app/items');
 
     // if none of the above states are matched, use this as the fallback
     $httpProvider.interceptors.push(function($q, $location, localStorageService) {
