@@ -153,6 +153,9 @@ angular.module('crabstore')
           path,
           function(payload) {
             $ionicPlatform.ready(function() {
+              if (payload.buyResponse.purchaseStatusResponse === null) {
+                return error("Unable to donwload nonfree apps.");
+              }
               var url = payload.buyResponse.
                 purchaseStatusResponse.appDeliveryData.downloadUrl;
               console.log(url);

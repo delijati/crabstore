@@ -82,7 +82,7 @@ angular.module('crabstore')
       crabstore.search(
         $scope.searchData.text,
         function(data) {$scope.items = data;},
-          function(data) {$scope.items = data;}
+        function(data) {console.log(data);}
       );
     };
 
