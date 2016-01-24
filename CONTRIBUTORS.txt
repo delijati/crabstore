@@ -1,3 +1,4 @@
 Here is a list of the people who contributed to "crabstore":
 
 * Josip Delic <delijati@gmx.net>
+* Carolin Reich (Icon)
