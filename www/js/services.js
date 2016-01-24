@@ -161,7 +161,7 @@ angular.module('crabstore')
               console.log(url);
               var cookie = payload.buyResponse.purchaseStatusResponse.
                 appDeliveryData.downloadAuthCookie[0];
-              var targetPath = cordova.file.externalDataDirectory + 'crabstore/' + id + '.apk';
+              var targetPath = cordova.file.dataDirectory + 'crabstore/' + id + '.apk';
               console.log(targetPath);
               var trustHosts = true;
               var options = {

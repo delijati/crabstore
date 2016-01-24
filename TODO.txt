@@ -1,4 +1,6 @@
 [] trigger apk install after download, or just download
 [] open another dialog to show that we have a download success
 [] show some more metadata
-[x] fix service it is appending results 
+[] get the "Download" android path
+[] use https://github.com/LouisT/cordova-useragent to set more device meta data
+[] add more tests

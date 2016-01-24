@@ -1,13 +1,11 @@
 Crapstore
 =========
 
-This is the manual to build crabstore a google market client.
+This is the manual to build an **EXPERIMENTAL** google market client
+``crabstore``.
 
 Setup
 -----
-
-We need to use android in version 3.5 because we need to set the user agent and
-this it not pissible with the latest codova-android or crosswalk.
 
 Download android sdk and install sdk-tools api 19 aka 4.4.2.
 
@@ -47,6 +45,10 @@ Run
 Run::
 
     $ ionic emulate android
+
+
+Set the android id to the one that is registered with your google account or
+download won't work.
 
 Run local with proxy
 --------------------
@@ -89,3 +91,10 @@ Build after checkout
 
     $ ionic state restore
     $ ionic state restore --plugins
+
+Check for updates
+-----------------
+
+This seams to be broken currently in JS. ``bower update`` is not really
+checking latest versions. So i tried
+https://www.npmjs.com/package/npm-check-updates
