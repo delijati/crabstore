@@ -22,8 +22,9 @@ angular.module('crabstore')
   'auth',
   'localStorageService',
   '$ionicPopup',
+  '$cordovaUserAgent',
   function($rootScope, $scope, $timeout, $location, auth, localStorageService,
-           $ionicPopup) {
+           $ionicPopup, $cordovaUserAgent) {
     // Form data for the login modal
     $scope.loginData = localStorageService.get('loginData');
 
@@ -36,6 +37,15 @@ angular.module('crabstore')
           var device = ionic.Platform.device();
           console.log(device.uuid);
           $scope.loginData.androidid = device.uuid;
+          
+          // show user agent
+          var promise = $cordovaUserAgent.getUserAgent();
+          promise.then(function(ua) {
+            $scope.loginData.androidUserAgent = ua;
+            console.log('Header: ' + ua);
+          }, function(reason) {
+            console.log('Header failed: ' + reason);
+          });
         });
       });
     }

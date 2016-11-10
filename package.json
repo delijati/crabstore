@@ -28,6 +28,10 @@
     {
       "locator": "https://github.com/apache/cordova-plugin-whitelist.git",
       "id": "cordova-plugin-whitelist"
+    },
+    {
+      "locator": "https://github.com/LouisT/cordova-useragent",
+      "id": "im.ltdev.cordova.UserAgent"
     }
   ],
   "cordovaPlatforms": [

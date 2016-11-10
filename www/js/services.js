@@ -192,4 +192,29 @@ angular.module('crabstore')
       }
     };
   }
+])
+.factory('$cordovaUserAgent', [
+  '$q',
+  function ($q) {
+
+    return {
+      getUserAgent: function () {
+        var q = $q.defer();
+        UserAgent.get(q.resolve, q.reject);
+        return q.promise;
+      },
+
+      setUserAgent: function (ua) {
+        var q = $q.defer();
+        UserAgent.set(ua, q.resolve, q.reject);
+        return q.promise;
+      },
+
+      resetUserAgent: function () {
+        var q = $q.defer();
+        UserAgent.reset(q.resolve, q.reject);
+        return q.promise;
+      },
+    };
+  }
 ]);

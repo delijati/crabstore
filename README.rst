@@ -31,6 +31,10 @@ We need to add whitelist to set permission in config.xml::
     $ ionic plugin add https://github.com/apache/cordova-plugin-whitelist.git 
     $ ionic plugin add cordova-plugin-file-transfer
 
+Add user agent plugin::
+
+    $ ionic plugin add https://github.com/LouisT/cordova-useragent
+
 See log:
 
     $ adb logcat

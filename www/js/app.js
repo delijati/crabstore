@@ -1,7 +1,11 @@
-/*global cordova, StatusBar */
+/*global cordova, StatusBar, $cordovaUserAgent */
 'use strict';
 
-angular.module('crabstore', ['ionic', 'LocalStorageModule', 'ngCordova'])
+angular.module('crabstore', [
+  'ionic',
+  'LocalStorageModule',
+  'ngCordova'
+])
 .constant('GoogleAPIUrl', 'https://android.clients.google.com')
 // .constant('GoogleAPIUrl', '') //http://localhost:22222')
 
@@ -10,7 +14,8 @@ angular.module('crabstore', ['ionic', 'LocalStorageModule', 'ngCordova'])
   '$rootScope',
   '$state',
   'auth',
-  function($ionicPlatform, $rootScope, $state, auth) {
+  '$cordovaUserAgent',
+  function($ionicPlatform, $rootScope, $state, auth, $cordovaUserAgent) {
     $ionicPlatform.ready(function() {
       // Hide the accessory bar by default (remove this to show the accessory
       // bar above the keyboard for form inputs)
@@ -22,6 +27,7 @@ angular.module('crabstore', ['ionic', 'LocalStorageModule', 'ngCordova'])
         StatusBar.styleDefault();
       }
     });
+
     console.log('RUNNN!!!');
 
     $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
